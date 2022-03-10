@@ -63,6 +63,10 @@ const typeDefs = gql`
     user_id: ID
   }
 
+  type DeleteAllOutput {
+    count: Int!
+  }
+
   type Query {
     # User
     users: [User!]!
@@ -80,15 +84,18 @@ const typeDefs = gql`
     createUser(data: CreateUserInput!): User!
     updateUser(id: ID!, data: UpdateUserInput!): User!
     deleteUser(id: ID!): User!
+    deleteAllUsers: DeleteAllOutput!
     # Post
     createPost(data: CreatePostInput!): Post!
     updatePost(id: ID!, data: UpdatePostInput!): Post!
     deletePost(id: ID!): Post!
+    deleteAllPosts: DeleteAllOutput!
 
     # Comment
     createComment(data: CreateCommentInput!): Comment!
     updateComment(id: ID!, data: UpdateCommentInput!): Comment!
     deleteComment(id: ID!): Comment!
+    deleteAllComments: DeleteAllOutput!
   }
 `;
 
@@ -148,6 +155,14 @@ const resolvers = {
       users.splice(user_index, 1);
       return deleted_user;
     },
+    deleteAllUsers: (parent, args) => {
+      const length = users.length;
+      users.splice(0, length);
+
+      return {
+        count: length,
+      };
+    },
 
     // Post
     createPost: (parent, { data: { title, user_id } }) => {
@@ -175,6 +190,14 @@ const resolvers = {
       posts.splice(post_index, 1);
       return deleted_post;
     },
+    deleteAllPosts: (parent, args) => {
+      const length = posts.length;
+      posts.splice(0, length);
+
+      return {
+        count: length,
+      };
+    },
     // Comment
     createComment: (parent, { data }) => {
       const comment = { id: nanoid(), ...data };
@@ -200,6 +223,14 @@ const resolvers = {
       const deleted_comment = comments[comment_index];
       comments.splice(comment_index, 1);
       return deleted_comment;
+    },
+    deleteAllComments: (parent, args) => {
+      const length = comments.length;
+      comments.splice(0, length);
+
+      return {
+        count: length,
+      };
     },
   },
 };
