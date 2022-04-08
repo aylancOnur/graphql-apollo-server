@@ -36,7 +36,7 @@ const comments = [
   },
 ];
 
-module.exports = {
+export default {
   users,
   posts,
   comments,
